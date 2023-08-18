@@ -19,8 +19,8 @@ export const getTransactionsByUser = async (req: Request, res: Response) => {
     const userId = req.params.userId;
     const sql = 'SELECT * FROM transactions WHERE user_id = ?';
     try {
-        const result = await db.query(sql, userId);
-        res.json(result[0]);
+        const [result]:any = await db.query(sql, userId);
+        res.json(result);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'An error occurred while fetching user transactions' });

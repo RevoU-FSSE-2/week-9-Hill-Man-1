@@ -2,7 +2,7 @@ import express, { Response, Request } from "express";
 import 'dotenv/config';
 import { db } from "./config/db.connection";
 import bodyParser from "body-parser";
-import router from "../src/routes/routes";
+import router from "./routes/routes";
 import { Redis } from "ioredis";
 
 const app = express();

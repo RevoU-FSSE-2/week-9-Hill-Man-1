@@ -20,8 +20,8 @@ const getTransactionsByUser = async (req, res) => {
     const userId = req.params.userId;
     const sql = 'SELECT * FROM transactions WHERE user_id = ?';
     try {
-        const result = await db_connection_1.db.query(sql, userId);
-        res.json(result[0]);
+        const [result] = await db_connection_1.db.query(sql, userId);
+        res.json(result);
     }
     catch (error) {
         console.error(error);

@@ -20,7 +20,7 @@ router.put('/transactions/:id', transactionController.updateTransaction);
 router.delete('/transactions/:id', transactionController.deleteTransaction);
 
 // // Get user information with balance and total expenses
-// router.get('/users/:id', userController.getUserInfo);
+router.get('/users/:id', userController.getUserInfo);
 
 
 export default router;

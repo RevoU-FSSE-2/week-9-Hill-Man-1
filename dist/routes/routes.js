@@ -29,6 +29,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const transactionController = __importStar(require("../controllers/transactionController"));
+const userController = __importStar(require("../controllers/userController"));
 router.get('/', (req, res) => {
     res.status(200).json({
         success: true,
@@ -38,9 +39,9 @@ router.get('/', (req, res) => {
 router.get('/transactions', transactionController.getAllTransactions);
 router.get('/transactions/user/:userId', transactionController.getTransactionsByUser);
 router.get('/transactions/type/:type', transactionController.getTransactionsByType);
-// router.post('/transactions', transactionController.createTransaction)
-// router.put('/transactions/:id', transactionController.updateTransaction);
-// router.delete('/transactions/:id', transactionController.deleteTransaction);
+router.post('/transactions', transactionController.createTransaction);
+router.put('/transactions/:id', transactionController.updateTransaction);
+router.delete('/transactions/:id', transactionController.deleteTransaction);
 // // Get user information with balance and total expenses
-// router.get('/users/:id', userController.getUserInfo);
+router.get('/users/:id', userController.getUserInfo);
 exports.default = router;

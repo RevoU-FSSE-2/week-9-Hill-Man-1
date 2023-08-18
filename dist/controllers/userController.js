@@ -21,7 +21,7 @@ const getUserInfo = async (req, res) => {
                 SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS total_income,
                 SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS total_expense
                 FROM users
-                LEFT JOIN transactions ON users.id = transactions.user_id
+                LEFT JOIN transactions ON users.id = transactions.user_id 
                 WHERE users.id = ?
                 GROUP BY users.id`;
             const [result] = await db_connection_1.db.query(sql, [userId]);
@@ -30,8 +30,9 @@ const getUserInfo = async (req, res) => {
                     id: result[0].id,
                     name: result[0].name,
                     address: result[0].address,
-                    total_income: result[0].total_income,
-                    total_expense: result[0].total_expense,
+                    // total_income: result[0].total_income,
+                    balance: result[0].total_income - result[0].total_expense,
+                    total_expense: result[0].total_expense
                 };
                 await redisClient.setex(userId, 3600, JSON.stringify(userData));
                 res.json(userData);

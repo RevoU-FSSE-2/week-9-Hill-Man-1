@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 require("dotenv/config");
 const db_connection_1 = require("./config/db.connection");
 const body_parser_1 = __importDefault(require("body-parser"));
-const routes_1 = __importDefault(require("../src/routes/routes"));
+const routes_1 = __importDefault(require("./routes/routes"));
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 app.use(body_parser_1.default.json());
