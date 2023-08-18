@@ -7,6 +7,15 @@ import { Redis } from "ioredis";
 
 const app = express();
 const port = process.env.URL || 6592;
+const r = new Redis({
+    host: 'containers-us-west-133.railway.app',
+    password: 'SYK28VPk6UaNnsaVWXsg',
+    port: 5501
+});
+
+r.on("connect",() => {
+    console.log("Connected Redis")
+});
 
 app.use(bodyParser.json());
 
