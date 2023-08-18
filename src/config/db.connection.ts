@@ -10,12 +10,14 @@ import 'dotenv/config';
 //     database: DBConfig.DB_NAME
 // };
 
+
+
 const poolConfig = {
-    host: DB_RailwayConfig.HOST,
-    user: DB_RailwayConfig.USER,
-    password: DB_RailwayConfig.PASSWORD,
-    port: DB_RailwayConfig.PORT,
-    database: DB_RailwayConfig.DB_RAILWAY_NAME
+    host: 'containers-us-west-42.railway.app',
+    user: 'root',
+    password: '8SmqdBhCH4ymAgc4evs7',
+    port: 6592,
+    database: 'railway'
 };
 
 export const db = mysql.createPool(poolConfig);
