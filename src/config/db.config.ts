@@ -6,11 +6,11 @@ export const DBConfig = {
 }
 
 export const DB_RailwayConfig = {
-    HOST: process.env.DB_RAILWAY_HOST || 'localhostcontainers-us-west-42.railway.app',
-    USER: process.env.DB_RAILWAY_USER || 'root',
-    PASSWORD: process.env.DB_RAILWAY_PASSWORD || '8SmqdBhCH4ymAgc4evs7',
-    PORT: process.env.DB_RAILWAY_PORT ? parseInt(process.env.DB_RAILWAY_PORT) : 3306,
-    DB_RAILWAY_NAME: process.env.DB_RAILWAY_NAME || 'railway'
+    host: 'containers-us-west-42.railway.app',
+    user: 'root',
+    password: '8SmqdBhCH4ymAgc4evs7',
+    port: 6592,
+    database: 'railway'
 };
 
 

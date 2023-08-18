@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTransaction = exports.updateTransaction = exports.createTransaction = exports.getTransactionsByType = exports.getTransactionsByUser = exports.getAllTransactions = void 0;
 const db_connection_1 = require("../config/db.connection");
+const ioredis_1 = __importDefault(require("ioredis"));
 // GET ALL TRANSACTIONS
 const getAllTransactions = async (req, res) => {
     try {
@@ -49,7 +53,19 @@ const createTransaction = async (req, res) => {
     const sql = 'INSERT INTO transactions (user_id, type, amount) VALUES (?, ?, ?)';
     try {
         const [result] = await db_connection_1.db.query(sql, [user_id, type, amount]);
-        res.json({ message: 'Transaction added successfully', id: result.insertId });
+        const insertedTransactionId = result.insertId;
+        const redisClient = new ioredis_1.default();
+        const redisKey = `user:${user_id}`;
+        redisClient.del(redisKey, (delErr, deletedAccount) => {
+            if (delErr) {
+                console.error(delErr);
+            }
+            else {
+                console.log(`delete cache userId: ${user_id}`);
+            }
+            redisClient.quit();
+        });
+        res.json({ message: 'Transaction added successfully', id: insertedTransactionId });
     }
     catch (error) {
         console.error(error);
@@ -61,20 +77,45 @@ exports.createTransaction = createTransaction;
 const updateTransaction = async (req, res) => {
     const transactionId = req.params.id;
     const { type, amount } = req.body;
-    const sql = 'UPDATE transactions SET type = ?, amount = ? WHERE id = ?';
+    const fetchTransactionSQL = "SELECT user_id FROM transactions WHERE id = ?";
+    const updateTransactionSQL = "UPDATE transactions SET type = ?, amount = ? WHERE id = ?";
     try {
-        await db_connection_1.db.query(sql, [type, amount, transactionId]);
-        res.json({ message: 'Transaction updated successfully' });
+        const [fetchResult] = await db_connection_1.db.query(fetchTransactionSQL, [transactionId]);
+        if (fetchResult.length === 0) {
+            console.error("Transaction Not Found");
+            return res.status(404).json({ error: "Transaction Not Found" });
+        }
+        const userId = fetchResult[0].user_id;
+        try {
+            await db_connection_1.db.query(updateTransactionSQL, [type, amount, transactionId]);
+            res.json({ message: 'Transaction updated successfully' });
+            const redisClient = new ioredis_1.default();
+            const redisKey = `user:${userId}`;
+            redisClient.del(redisKey, (delErr, deletedAccount) => {
+                if (delErr) {
+                    console.error(delErr);
+                }
+                else {
+                    console.log(`Deleted Cache for user id : ${userId}`);
+                }
+                redisClient.quit();
+            });
+        }
+        catch (updateErr) {
+            console.error(updateErr);
+            res.status(500).json({ error: "An error occurred while updating transaction" });
+        }
     }
-    catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'An error occurred while updating the transaction' });
+    catch (fetchErr) {
+        console.error(fetchErr);
+        res.status(500).json({ error: 'An error occurred while fetching transaction data' });
     }
 };
 exports.updateTransaction = updateTransaction;
 // DELETE TRANSACTION
 const deleteTransaction = async (req, res) => {
     const transactionId = req.params.id;
+    const fetchTransactionSQL = `SELECT user_id FROM transations WHERE id = ?`;
     const sql = 'DELETE FROM transactions WHERE id = ?';
     try {
         await db_connection_1.db.query(sql, [transactionId]);
