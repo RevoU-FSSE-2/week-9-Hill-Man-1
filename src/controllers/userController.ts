@@ -7,10 +7,14 @@ export const getUserInfo = async (req: Request, res: Response) => {
     const userId = req.params.id;
 
     const redisKey = `user:${userId}`; 
-    const redisClient = new Redis();
+    const r = new Redis({
+        host: 'containers-us-west-133.railway.app',
+        password: 'SYK28VPk6UaNnsaVWXsg',
+        port: 5501
+    });
 
 
-    redisClient.get(redisKey, async (redisErr, cachedData) => {
+    r.get(redisKey, async (redisErr, cachedData) => {
         if (cachedData) {
             res.json(JSON.parse(cachedData));
             console.log('get data from cache');
@@ -35,7 +39,7 @@ export const getUserInfo = async (req: Request, res: Response) => {
                     };
 
                     // Set data in Redis cache
-                    redisClient.setex(redisKey, 60, JSON.stringify(userData)); // Cache for 1 hour
+                    r.setex(redisKey, 60, JSON.stringify(userData)); // Cache for 1 hour
                     res.json(userData);
                     console.log('add new data to cache');
                 } else {
