@@ -6,12 +6,12 @@ export const DBConfig = {
 }
 
 export const DB_RailwayConfig = {
-    HOST: process.env.DB_RAILWAY_HOST,
-    PORT: process.env.DB_RAILWAY_PORT,
-    USER: process.env.DB_RAILWAY_USERNAME,
-    PASSWORD: process.env.DB_RAILWAY_PASSWORD,
-    DB_NAME: process.env.DB_RAILWAY_NAME
-}
+    HOST: process.env.DB_RAILWAY_HOST || 'localhost',
+    USER: process.env.DB_RAILWAY_USER || 'root',
+    PASSWORD: process.env.DB_RAILWAY_PASSWORD || '',
+    PORT: process.env.DB_RAILWAY_PORT ? parseInt(process.env.DB_RAILWAY_PORT) : 3306,
+    DB_RAILWAY_NAME: process.env.DB_RAILWAY_NAME || 'your_database_name'
+};
 
 
 
